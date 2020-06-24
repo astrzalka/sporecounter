@@ -1,0 +1,13 @@
+Package: sporecounter
+Title: Spore defects counter
+Version: 0.0.0.9000
+Authors@R: person('Agnieszka', 'Strzałka', email = 'the.larch19@gmail.com', role = c('cre', 'aut'))
+Description: Based upon fluorescence profiles from ImageJ will find positions of septa and chromosomes in the hyphae.
+License: MIT + file LICENSE
+Imports: 
+    config,
+    golem,
+    shiny
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
