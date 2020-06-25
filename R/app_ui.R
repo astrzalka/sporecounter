@@ -31,6 +31,9 @@ app_ui <- function(request) {
                                          'Ostatni chromosom' = 'dna_last',
                                          'Pierwsza septa' = 'sept_first',
                                          'Ostatnie septa' = 'sept_last'), inline = TRUE),
+          textInput('id', 'Identyfikator strzępki', 'strzepka_1'),
+          downloadButton('download_data', 'Pobierz wynik w formacie txt'),
+          
           width=3
           
         ),

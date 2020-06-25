@@ -84,9 +84,9 @@ find_spory_summarise <- function(wynik_dna, wynik_sept, nr=1){
                       sept_2 = rep(NA, x), 
                       DNA = rep(NA, x), 
                       dist_sept = rep(NA, x), 
-                      ilosc_spor =rep(NA, x),
+                      liczba_spor =rep(NA, x),
                       dlugosc = rep(NA, x),
-                      ilosc_chr = rep(NA, x))
+                      liczba_chr = rep(NA, x))
   
   for (i in 1 : (nrow(wynik_sept)+1)){
     if(i == 1){
@@ -138,10 +138,10 @@ find_spory_summarise <- function(wynik_dna, wynik_sept, nr=1){
     
   }
   
-  wynik$ilosc_spor <- nlevels(factor(wynik$spora))
+  wynik$liczba_spor <- nlevels(factor(wynik$spora))
   
   wynik <- wynik %>% dplyr::group_by(spora) %>%
-    dplyr::mutate(ilosc_chr = dplyr::n()) %>%
+    dplyr::mutate(liczba_chr = dplyr::n()) %>%
     dplyr::arrange(sept_1)
   
   # cat('Dlugosc strzepki: ', wynik$dlugosc[1], '\n', 
