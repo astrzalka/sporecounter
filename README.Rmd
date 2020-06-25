@@ -19,37 +19,18 @@ knitr::opts_chunk$set(
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- badges: end -->
 
-The goal of sporecounter is to ...
+The goal of spocounter is to make Streptomyces defects analysis easier by using plot profiles generated from ImageJ and R package Peaks. This way positions of all septa and nuclei can be found, along with distances between septa and spores lacking DNA signal.
 
 ## Installation
 
-You can install the released version of sporecounter from [CRAN](https://CRAN.R-project.org) with:
+You can install the released version of smoother from Github:
 
 ``` r
-install.packages("sporecounter")
+devtools::install_github('astrzalka/sporecounter')
 ```
 
-## Example
+However package Peaks is no longer available on CRAN and has been moved to archive. Installation requires building from source which can be problematic. Package Peaks already built for Windows can be downloaded from our disk.
 
-This is a basic example which shows you how to solve a common problem:
 
-```{r example}
-library(sporecounter)
-## basic example code
-```
+sporecounter includes example datasets stored in data-raw directory and included in the app itself for easy testing.
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
-
-```{r cars}
-summary(cars)
-```
-
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub!
