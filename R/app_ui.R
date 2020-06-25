@@ -35,7 +35,7 @@ app_ui <- function(request) {
         ),
         
         mainPanel(
-          
+          tableOutput("tabela")
         )
       )
     )

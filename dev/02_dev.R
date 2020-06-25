@@ -18,6 +18,7 @@
 usethis::use_package( "Peaks" )
 usethis::use_package( "ggplot2" )
 usethis::use_package( "dplyr" )
+usethis::use_package( "patchwork" )
 
 ## Add modules ----
 ## Create a module infrastructure in R/
