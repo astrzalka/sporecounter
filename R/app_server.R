@@ -68,6 +68,10 @@ app_server <- function( input, output, session ) {
     
     tabela <- find_spory_summarise(wynik_dna = wynik[[1]], wynik_sept = wynik[[2]])
     
+    usun_spory <- sub(' ', '', unlist(stringr::str_split(input$usun_spory, ',')))
+    
+    tabela <- tabela %>% dplyr::filter(!(spora %in% usun_spory))
+    
     return(tabela)
     
   })

@@ -30,7 +30,8 @@ app_ui <- function(request) {
                              choices = c('Pierwszy chromosom' = 'dna_first',
                                          'Ostatni chromosom' = 'dna_last',
                                          'Pierwsza septa' = 'sept_first',
-                                         'Ostatnie septa' = 'sept_last'), inline = TRUE),
+                                         'Ostatnia septa' = 'sept_last'), inline = TRUE),
+          textInput('usun_spory', 'Czy chcesz usunąć niektóre spory? (Podaj ich nazwy oddzielone przecinkami)'),
           textInput('id', 'Identyfikator strzępki', 'strzepka_1'),
           downloadButton('download_data', 'Pobierz wynik w formacie txt'),
           
