@@ -13,7 +13,6 @@ Imports:
     DT,
     glue,
     htmltools,
-    Peaks,
     ggplot2,
     dplyr,
     patchwork,
