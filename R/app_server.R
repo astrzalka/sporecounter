@@ -14,16 +14,25 @@ app_server <- function( input, output, session ) {
   
   dane_1 <- reactive({
     
-      inFile <- input$dane_1
-      if (is.null(inFile))
-        return(NULL)
-      d <- read.table(inFile$datapath, header=FALSE, sep = '\t', quote = "\"")
+    if(input$example == TRUE){
+      d <- data_1
       return(d)
-  
-      })
+    }
+    
+    inFile <- input$dane_1
+    if (is.null(inFile))
+      return(NULL)
+    d <- read.table(inFile$datapath, header=FALSE, sep = '\t', quote = "\"")
+    return(d)
+    
+  })
   
   dane_2 <- reactive({
     
+    if(input$example == TRUE){
+      d <- data_2
+      return(d)
+    }
     inFile <- input$dane_2
     if (is.null(inFile))
       return(NULL)
@@ -64,11 +73,11 @@ app_server <- function( input, output, session ) {
   })
   
   output$tabela <- renderTable({
-    if (is.null(input$dane_1)|is.null(input$dane_2))
+    if ((is.null(input$dane_1)|is.null(input$dane_2))&input$example == FALSE)
       return(NULL)
     wynik_podsum()
   }
-    )
+  )
   
   
   wykresInput <- reactive({
@@ -87,7 +96,7 @@ app_server <- function( input, output, session ) {
   
   # funckja pokazujące wykres w aplikacji
   output$wykres <- renderPlot({
-    if (is.null(input$dane_1)|is.null(input$dane_2))
+    if ((is.null(input$dane_1)|is.null(input$dane_2))&input$example == FALSE)
       return(NULL)
     print(wykresInput())
   })
