@@ -30,13 +30,15 @@ app_ui <- function(request) {
                              choices = c('Pierwszy chromosom' = 'dna_first',
                                          'Ostatni chromosom' = 'dna_last',
                                          'Pierwsza septa' = 'sept_first',
-                                         'Ostatnie septa' = 'sept_last'), inline = TRUE)
+                                         'Ostatnie septa' = 'sept_last'), inline = TRUE),
+          width=3
           
         ),
         
         mainPanel(
           plotOutput("wykres", height = "600px"),
-          tableOutput("tabela")
+          tableOutput("tabela"),
+          width=9
         )
       )
     )

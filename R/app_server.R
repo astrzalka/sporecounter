@@ -9,6 +9,8 @@ app_server <- function( input, output, session ) {
   
   library(magrittr)
   library(patchwork)
+  library(Peaks)
+  library.dynam('Peaks', 'Peaks', lib.loc=NULL) 
   
   dane_1 <- reactive({
     

@@ -45,12 +45,14 @@ find_spory_plot <- function(ramka_1, ramka_2, wynik_dna, wynik_sept){
   ramka_2 <- ramka_2 %>% dplyr::mutate(V2 = V2 - min(V2),
                                 V2 = V2/max(V2))
   
+  max_plot <- max(ramka_1$V1)
+  
   p <- ggplot2::ggplot(wynik_sept)
   p1 <- p + ggplot2::geom_segment(ggplot2::aes(x = dist_tip, y = 1, yend = 2, xend = dist_tip), color = 'red3') + 
     ggplot2::geom_point(data = wynik_dna, ggplot2::aes(x = dist_tip, y = 1.5), color = 'blue')+
     ggplot2::ylim(0.5, 2.5)+
     ggplot2::theme_bw() + 
-    ggplot2::xlim(-0.5,NA)+
+    ggplot2::xlim(-0.5,max_plot)+
     ggplot2::xlab('')+
     ggplot2::ylab('')+
     ggplot2::theme(axis.text.y = ggplot2::element_blank(), axis.ticks.y = ggplot2::element_blank())
@@ -63,7 +65,7 @@ find_spory_plot <- function(ramka_1, ramka_2, wynik_dna, wynik_sept){
     ggplot2::theme_bw()+
     ggplot2::scale_y_continuous(breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1))+
     ggplot2::geom_vline(data = wynik_sept, ggplot2::aes(xintercept = dist_tip), color = 'grey20', linetype = 2)+
-    ggplot2::xlim(-0.5,NA)+
+    ggplot2::xlim(-0.5,max_plot)+
     ggplot2::xlab('Distance to the tip')+
     ggplot2::ylab('Normalized fluorescence')
   
@@ -139,13 +141,14 @@ find_spory_summarise <- function(wynik_dna, wynik_sept, nr=1){
   wynik$ilosc_spor <- nlevels(factor(wynik$spora))
   
   wynik <- wynik %>% dplyr::group_by(spora) %>%
-    dplyr::mutate(ilosc_chr = dplyr::n())
+    dplyr::mutate(ilosc_chr = dplyr::n()) %>%
+    dplyr::arrange(sept_1)
   
-  cat('Dlugosc strzepki: ', wynik$dlugosc[1], '\n', 
-      'Ilosc spor : ', wynik$ilosc_spor[i], '\n',
-      'Ilosc chromosomow: ', nrow(wynik_dna), '\n', 
-      'Ilosc spor bez DNA: ', sum(is.na(wynik$DNA)), '\n',
-      'Srednia odleglosc', round(mean(wynik$dist_sept),2))
+  # cat('Dlugosc strzepki: ', wynik$dlugosc[1], '\n', 
+  #     'Ilosc spor : ', wynik$ilosc_spor[i], '\n',
+  #     'Ilosc chromosomow: ', nrow(wynik_dna), '\n', 
+  #     'Ilosc spor bez DNA: ', sum(is.na(wynik$DNA)), '\n',
+  #     'Srednia odleglosc', round(mean(wynik$dist_sept),2))
   
   return(wynik)
   
