@@ -39,33 +39,33 @@ find_spory <- function(ramka_1, ramka_2, s_1 = 2, m_1 = FALSE, procent_1 = 0.05,
 
 find_spory_plot <- function(ramka_1, ramka_2, wynik_dna, wynik_sept){
   
-  ramka_1 <- ramka_1 %>% mutate(V2 = V2 - min(V2),
+  ramka_1 <- ramka_1 %>% dplyr::mutate(V2 = V2 - min(V2),
                                 V2 = V2/max(V2))
   
-  ramka_2 <- ramka_2 %>% mutate(V2 = V2 - min(V2),
+  ramka_2 <- ramka_2 %>% dplyr::mutate(V2 = V2 - min(V2),
                                 V2 = V2/max(V2))
   
-  p <- ggplot(wynik_sept)
-  p1 <- p + geom_segment(aes(x = dist_tip, y = 1, yend = 2, xend = dist_tip), color = 'red3') + 
-    geom_point(data = wynik_dna, aes(x = dist_tip, y = 1.5), color = 'blue')+
-    ylim(0.5, 2.5)+
-    theme_bw() + 
-    xlim(-0.5,NA)+
-    xlab('')+
-    ylab('')+
-    theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+  p <- ggplot2::ggplot(wynik_sept)
+  p1 <- p + ggplot2::geom_segment(ggplot2::aes(x = dist_tip, y = 1, yend = 2, xend = dist_tip), color = 'red3') + 
+    ggplot2::geom_point(data = wynik_dna, ggplot2::aes(x = dist_tip, y = 1.5), color = 'blue')+
+    ggplot2::ylim(0.5, 2.5)+
+    ggplot2::theme_bw() + 
+    ggplot2::xlim(-0.5,NA)+
+    ggplot2::xlab('')+
+    ggplot2::ylab('')+
+    ggplot2::theme(axis.text.y = ggplot2::element_blank(), axis.ticks.y = ggplot2::element_blank())
   
   
   
-  p <- ggplot(ramka_1)
-  p2 <- p + geom_line(aes(x = V1, y = V2), color = 'blue') + 
-    geom_line(data = ramka_2, aes(x = V1, y = V2), color = 'red')+
-    theme_bw()+
-    scale_y_continuous(breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1))+
-    geom_vline(data = wynik_sept, aes(xintercept = dist_tip), color = 'grey20', linetype = 2)+
-    xlim(-0.5,NA)+
-    xlab('Distance to the tip')+
-    ylab('Normalized fluorescence')
+  p <- ggplot2::ggplot(ramka_1)
+  p2 <- p + ggplot2::geom_line(ggplot2::aes(x = V1, y = V2), color = 'blue') + 
+    ggplot2::geom_line(data = ramka_2, ggplot2::aes(x = V1, y = V2), color = 'red')+
+    ggplot2::theme_bw()+
+    ggplot2::scale_y_continuous(breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1))+
+    ggplot2::geom_vline(data = wynik_sept, ggplot2::aes(xintercept = dist_tip), color = 'grey20', linetype = 2)+
+    ggplot2::xlim(-0.5,NA)+
+    ggplot2::xlab('Distance to the tip')+
+    ggplot2::ylab('Normalized fluorescence')
   
   print(p1 + p2 + plot_layout(ncol=1, heights = c(1,3)))
   
@@ -138,7 +138,8 @@ find_spory_summarise <- function(wynik_dna, wynik_sept, nr=1){
   
   wynik$ilosc_spor <- nlevels(factor(wynik$spora))
   
-  wynik <- wynik %>% group_by(spora) %>% mutate(ilosc_chr = n())
+  wynik <- wynik %>% dplyr::group_by(spora) %>%
+    dplyr::mutate(ilosc_chr = dplyr::n())
   
   cat('Dlugosc strzepki: ', wynik$dlugosc[1], '\n', 
       'Ilosc spor : ', wynik$ilosc_spor[i], '\n',
@@ -162,10 +163,10 @@ find_spory_summarise <- function(wynik_dna, wynik_sept, nr=1){
 find_peaks <- function (ramka, s = 2, m = FALSE, procent = 1, threshold=10, 
                         back=FALSE, plot=TRUE, lapse = 10, dodaj_nr = TRUE, ...) { 
   # ładuje potrzebne pakiety (muszą być zainstalowane)
-  library(modeest)
-  library(Peaks)
-  library.dynam('Peaks', 'Peaks', lib.loc=NULL) 
-  library(dplyr)
+  #library(modeest)
+  #library(Peaks)
+  #library.dynam('Peaks', 'Peaks', lib.loc=NULL) 
+  #library(dplyr)
   ilosc <- 0
   # sprawdzamy ile jest klatek
   ramka[,3]<-as.factor(ramka[,3])
@@ -178,7 +179,7 @@ find_peaks <- function (ramka, s = 2, m = FALSE, procent = 1, threshold=10,
     x<-subset(ramka, ramka[,3] == poziomy[i])
     x1<-x
     # normalizacja przez baseline (moda)
-    baza <- mlv(x[,2], method="shorth")
+    baza <- modeest::mlv(x[,2], method="shorth")
     # jaki procent tła ma odjąć
     baza2 <- baza[[1]] * procent
     # odejmujemy wartość baseline od intensywności i dzielimy przez baseline
@@ -187,7 +188,7 @@ find_peaks <- function (ramka, s = 2, m = FALSE, procent = 1, threshold=10,
     x[,2]<-replace(x[,2], x[,2]<0, 0)
     
     # szukanie pików
-    piki<-SpectrumSearch(x[,2], sigma=s, markov=m, threshold=threshold, background=back)
+    piki<-Peaks::SpectrumSearch(x[,2], sigma=s, markov=m, threshold=threshold, background=back)
     # ilosc znalezionych pików
     ilosc <- sum(ilosc, length(piki$pos))
     # rysuje wykres z zaznaczonymi pikami, jeżeli plot == TRUE
@@ -220,7 +221,7 @@ find_peaks <- function (ramka, s = 2, m = FALSE, procent = 1, threshold=10,
   }
   
   # sortuje wyniki najpierw według klatek, potem według odległości od tipa
-  wynik_kon<-arrange(wynik_kon, indeks, dist_tip)
+  wynik_kon<-dplyr::arrange(wynik_kon, indeks, dist_tip)
   # zwraca wynik
   return(wynik_kon)
 }

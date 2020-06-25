@@ -35,6 +35,7 @@ app_ui <- function(request) {
         ),
         
         mainPanel(
+          plotOutput("wykres", height = "600px"),
           tableOutput("tabela")
         )
       )

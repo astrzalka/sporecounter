@@ -6,6 +6,10 @@
 #' @noRd
 app_server <- function( input, output, session ) {
   # List the first level callModules here
+  
+  library(magrittr)
+  library(patchwork)
+  
   dane_1 <- reactive({
     
       inFile <- input$dane_1
@@ -57,7 +61,33 @@ app_server <- function( input, output, session ) {
     
   })
   
-  output$tabela <- renderTable(wynik_podsum())
+  output$tabela <- renderTable({
+    if (is.null(input$dane_1)|is.null(input$dane_2))
+      return(NULL)
+    wynik_podsum()
+  }
+    )
   
+  
+  wykresInput <- reactive({
+    
+    ramka_1 <- dane_1()
+    ramka_2 <- dane_2()
+    
+    wynik <- find_wynik()
+    
+    find_spory_plot(ramka_1 = ramka_1, 
+                    ramka_2 = ramka_2,
+                    wynik_dna = wynik[[1]],
+                    wynik_sept = wynik[[2]])
+    
+  })
+  
+  # funckja pokazujące wykres w aplikacji
+  output$wykres <- renderPlot({
+    if (is.null(input$dane_1)|is.null(input$dane_2))
+      return(NULL)
+    print(wykresInput())
+  })
   
 }
