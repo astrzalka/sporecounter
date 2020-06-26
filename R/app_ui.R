@@ -19,6 +19,7 @@ app_ui <- function(request) {
                     accept=c('.txt')),
           fileInput("dane_2", 'Wybierz drugi plik .txt',
                     accept=c('.txt')),
+          checkboxInput('header', 'Czy dane mają nagłówki?', value = TRUE),
           numericInput('s_1', 'Średnia szerokość pików dla DNA', value = 2, step = 0.1),
           checkboxInput('m_1', 'Czy zastosować wygładzanie Markova dla DNA?', value = FALSE),
           numericInput('procent_1', 'Procent odejmowanego tła dla DNA', value = 0.05, step = 0.01),

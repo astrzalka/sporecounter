@@ -22,7 +22,14 @@ app_server <- function( input, output, session ) {
     inFile <- input$dane_1
     if (is.null(inFile))
       return(NULL)
-    d <- read.table(inFile$datapath, header=FALSE, sep = '\t', quote = "\"")
+    d <- read.table(inFile$datapath, header=input$header, sep = '\t', quote = "\"")
+    
+    if(ncol(d) == 3){
+      d <- d[,-1]
+      
+    }
+    
+    colnames(d) <- c('V1', 'V2')
     return(d)
     
   })
@@ -36,7 +43,13 @@ app_server <- function( input, output, session ) {
     inFile <- input$dane_2
     if (is.null(inFile))
       return(NULL)
-    d <- read.table(inFile$datapath, header=FALSE, sep = '\t', quote = "\"")
+    d <- read.table(inFile$datapath, header=input$header, sep = '\t', quote = "\"")
+    
+    if(ncol(d) == 3){
+      d <- d[,-1]
+    }
+    
+    colnames(d) <- c('V1', 'V2')
     return(d)
     
   })
