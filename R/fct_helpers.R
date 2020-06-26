@@ -142,7 +142,10 @@ find_spory_summarise <- function(wynik_dna, wynik_sept, nr=1){
   
   wynik <- wynik %>% dplyr::group_by(spora) %>%
     dplyr::mutate(liczba_chr = dplyr::n(),
+
                   liczba_chr = as.integer(ifelse(is.na(DNA), 0, liczba_chr))) %>%
+
+
     dplyr::arrange(sept_1)
   
   # cat('Dlugosc strzepki: ', wynik$dlugosc[1], '\n', 
