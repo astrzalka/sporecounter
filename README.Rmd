@@ -34,3 +34,5 @@ However package Peaks is no longer available on CRAN and has been moved to archi
 
 sporecounter includes example datasets stored in data-raw directory and included in the app itself for easy testing.
 
+
+

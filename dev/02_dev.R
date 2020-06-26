@@ -20,6 +20,7 @@ usethis::use_package( "ggplot2" )
 usethis::use_package( "dplyr" )
 usethis::use_package( "patchwork" )
 usethis::use_package( "modeest" )
+usethis::use_package( "shinythemes" )
 
 ## Add modules ----
 ## Create a module infrastructure in R/
