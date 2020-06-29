@@ -127,7 +127,7 @@ app_server <- function( input, output, session ) {
   output$download_data <- downloadHandler(
     
     filename = function() {
-      paste(input$id, '.txt', sep = '')
+      paste('wynik', input$id, '.txt', sep = '')
     },
     content = function(file) {
       write.table(wynik_podsum(), file)
