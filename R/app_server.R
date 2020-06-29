@@ -72,6 +72,8 @@ app_server <- function( input, output, session ) {
                         threshold_2 = input$threshold_2,
                         usun = input$usun)
     
+    
+    
     return(wynik)
   })
   
@@ -79,11 +81,15 @@ app_server <- function( input, output, session ) {
     
     wynik <- find_wynik()
     
-    tabela <- find_spory_summarise(wynik_dna = wynik[[1]], wynik_sept = wynik[[2]])
+    tabela <- find_spory_summarise(wynik_dna = wynik[[1]], wynik_sept = wynik[[2]], strzepka = input$id)
     
     usun_spory <- sub(' ', '', unlist(stringr::str_split(input$usun_spory, ',')))
     
     tabela <- tabela %>% dplyr::filter(!(spora %in% usun_spory))
+    
+    tabela$parametry <- paste(input$s_1, input$m_1, input$procent_1, input$threshold_1,
+                              input$s_2, input$m_2, input$procent_2, input$threshold_2,
+                              sep = '_')
     
     return(tabela)
     
