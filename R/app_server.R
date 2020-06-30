@@ -239,6 +239,8 @@ app_server <- function( input, output, session ) {
     
     p2 <- p2 + ggplot2::coord_flip()
     
+    p2 <- p2 + ggplot2::scale_y_continuous(labels = scales::percent)
+    
     p2 <- p2 + ggplot2::theme_bw()
     
     dane_podsum %>% dplyr::mutate(proc_norm = 1 - proc_micro - proc_macro) %>%
@@ -259,6 +261,8 @@ app_server <- function( input, output, session ) {
     p3 <- p3 + ggplot2::xlab('')
     
     p3 <- p3 + ggplot2::coord_flip()
+    
+    p3 <- p3 + ggplot2::scale_y_continuous(labels = scales::percent)
     
     p3 <- p3 + ggplot2::theme_bw()
     

@@ -22,6 +22,7 @@ usethis::use_package( "patchwork" )
 usethis::use_package( "modeest" )
 usethis::use_package( "shinythemes" )
 usethis::use_package( "data.table" )
+usethis::use_package( "scales" )
 
 ## Add modules ----
 ## Create a module infrastructure in R/
