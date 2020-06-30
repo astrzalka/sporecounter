@@ -74,12 +74,13 @@ find_spory_plot <- function(ramka_1, ramka_2, wynik_dna, wynik_sept){
   
 }
 
-find_spory_summarise <- function(wynik_dna, wynik_sept, strzepka){
+find_spory_summarise <- function(wynik_dna, wynik_sept, strzepka, szczep){
   
   x <- nrow(wynik_sept) + 1
   
   wynik <- data.frame(spora = rep(NA, x), 
-                      strzepka = rep(strzepka, x), 
+                      strzepka = rep(strzepka, x),
+                      szczep = rep(szczep, x),
                       sept_1 = rep(NA, x), 
                       sept_2 = rep(NA, x), 
                       DNA = rep(NA, x), 

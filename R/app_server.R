@@ -81,7 +81,8 @@ app_server <- function( input, output, session ) {
     
     wynik <- find_wynik()
     
-    tabela <- find_spory_summarise(wynik_dna = wynik[[1]], wynik_sept = wynik[[2]], strzepka = input$id)
+    tabela <- find_spory_summarise(wynik_dna = wynik[[1]], wynik_sept = wynik[[2]], 
+                                   strzepka = input$id, szczep = input$szczep)
     
     usun_spory <- sub(' ', '', unlist(stringr::str_split(input$usun_spory, ',')))
     
@@ -117,7 +118,7 @@ app_server <- function( input, output, session ) {
     
   })
   
-  # funckja pokazujące wykres w aplikacji
+  # funkcja pokazująca wykres w aplikacji
   output$wykres <- renderPlot({
     if ((is.null(input$dane_1)|is.null(input$dane_2))&input$example == FALSE)
       return(NULL)
@@ -134,5 +135,12 @@ app_server <- function( input, output, session ) {
     }
     
   )
+  
+  mycsvs<-reactive({
+    data.table::rbindlist(lapply(input$wyniki$datapath, read.table),
+              use.names = TRUE, fill = TRUE)
+  })
+  output$tabela_wyniki <- renderTable(mycsvs())
+
   
 }
