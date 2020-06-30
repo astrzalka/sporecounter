@@ -135,6 +135,17 @@ app_server <- function( input, output, session ) {
     }
     
   )
+  
+  output$download_data_all <- downloadHandler(
+    
+    filename = function() {
+      paste('wyniki_all', '.txt', sep = '')
+    },
+    content = function(file) {
+      write.table(dane_porownanie(), file)
+    }
+    
+  )
   # load multiple files into shiny using data.table and lapply
   dane_porownanie <-reactive({
     data.table::rbindlist(lapply(input$wyniki$datapath, read.table),

@@ -57,13 +57,14 @@ app_ui <- function(request) {
                                          choices = c("Histogram" = 'hist',
                                                      'Boxplot' = 'boxplot',
                                                      'Wykres gęstości prawdopodobieństwa' = 'density'),
-                                         selected = 'hist', inline = TRUE),
+                                         selected = 'boxplot', inline = TRUE),
                             numericInput('hist_bin', 'Podaj szerość słupków histogramu', value = 0.2, 
                                          step = 0.1),
                             numericInput('micro', 'Podaj szerokość mikrokompartmentu', 
                                          value = 0.5, min = 0, step = 0.1),
                             numericInput('macro', 'Podaj szerokość makrokompartmentu', 
-                                         value = 3, min = 0, step = 0.1)
+                                         value = 3, min = 0, step = 0.1),
+                            downloadButton('download_data_all', 'Pobierz zebrane dane w formacie txt')
                           ),
                           mainPanel(
                             tabsetPanel(
