@@ -179,7 +179,7 @@ app_server <- function( input, output, session ) {
     # wybiera rodzaj wykresu
     if(input$wykres_type == 'hist'){
       p1 <- p1 + ggplot2::geom_histogram(ggplot2::aes(x = dist_sept, fill = szczep),
-                                         binwidth = 0.2)
+                                         binwidth = input$hist_bin, position = 'dodge')
     }
     
     if(input$wykres_type == 'density'){
@@ -215,8 +215,8 @@ app_server <- function( input, output, session ) {
       
     }
     
-    p1 <- p1 + ggplot2::scale_color_viridis_d(end = 0.9, option = 'B')+
-      ggplot2::scale_fill_viridis_d(end = 0.9, option = 'B')
+    p1 <- p1 + ggplot2::scale_color_brewer(palette = 'Set1')+
+      ggplot2::scale_fill_brewer(palette = 'Pastel1')
     
     p1 <- p1 + ggplot2::theme_bw()
     #print(p1)

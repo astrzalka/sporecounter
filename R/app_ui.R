@@ -58,6 +58,8 @@ app_ui <- function(request) {
                                                      'Boxplot' = 'boxplot',
                                                      'Wykres gęstości prawdopodobieństwa' = 'density'),
                                          selected = 'hist', inline = TRUE),
+                            numericInput('hist_bin', 'Podaj szerość słupków histogramu', value = 0.2, 
+                                         step = 0.1),
                             numericInput('micro', 'Podaj szerokość mikrokompartmentu', 
                                          value = 0.5, min = 0, step = 0.1),
                             numericInput('macro', 'Podaj szerokość makrokompartmentu', 
