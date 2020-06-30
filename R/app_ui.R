@@ -73,7 +73,8 @@ app_ui <- function(request) {
                                        tableOutput("tabela_podsumowanie")
                                        ),
                               tabPanel("Wykresy",
-                                       plotOutput('wykres_podsumowanie'), height = "600px")
+                                       plotOutput('wykres_podsumowanie', height = "800px")
+                                       )
                             )
                             
                           )

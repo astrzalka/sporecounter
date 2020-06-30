@@ -235,14 +235,34 @@ app_server <- function( input, output, session ) {
                                           name = 'DNA',
                                           labels = c('Nie', 'Tak'))
     
-    p2 <- p2 + ggplot2::theme(axis.title.y = ggplot2::element_blank())
+    p2 <- p2 + ggplot2::xlab('')
     
     p2 <- p2 + ggplot2::coord_flip()
     
     p2 <- p2 + ggplot2::theme_bw()
     
+    dane_podsum %>% dplyr::mutate(proc_norm = 1 - proc_micro - proc_macro) %>%
+      dplyr::select(szczep, proc_norm, proc_micro, proc_macro) %>%
+      tidyr::pivot_longer(cols = dplyr::contains('proc'),
+                          names_to = 'spore',
+                          values_to = 'procent') %>%
+      dplyr::mutate(spore = factor(spore, levels = c('proc_macro', 'proc_norm', 'proc_micro'))) -> dane_DNA
     
-    print(p1 + p2 + plot_layout(ncol = 1, heights = c(4,1)))
+    p3 <- ggplot2::ggplot(dane_DNA, ggplot2::aes(x = szczep, y = procent, fill = spore))
+    
+    p3 <- p3 + ggplot2::geom_col()
+    
+    p3 <- p3 + ggplot2::scale_fill_manual(values = c('dodgerblue1', 'gray40', 'indianred3'),
+                                          name = '',
+                                          labels = c('Makrokompartment', 'Normalna prespora', 'Mikrokompartment'))
+    
+    p3 <- p3 + ggplot2::xlab('')
+    
+    p3 <- p3 + ggplot2::coord_flip()
+    
+    p3 <- p3 + ggplot2::theme_bw()
+    
+    print(p1 + p2 + p3 + plot_layout(ncol = 1, heights = c(4,1,1)))
   })
   
   output$wykres_podsumowanie <- renderPlot({
