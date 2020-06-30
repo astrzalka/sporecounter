@@ -53,12 +53,27 @@ app_ui <- function(request) {
                tabPanel("Zebranie wyników",
                         sidebarLayout(
                           sidebarPanel(
-                            fileInput('wyniki', 'Wczytaj pliki txt z wynikami', multiple = TRUE)
+                            fileInput('wyniki', 'Wczytaj pliki txt z wynikami', multiple = TRUE),
+                            radioButtons('wykres_type', 'Jak pokazać odległości pomiędzy przegrodami?',
+                                         choices = c("Histogram" = 'hist',
+                                                     'Boxplot' = 'boxplot',
+                                                     'Wykres gęstości prawdopodobieństwa' = 'density'),
+                                         selected = 'hist', inline = TRUE),
+                            numericInput('micro', 'Podaj szerokość mikrokompartmentu', 
+                                         value = 0.5, min = 0, step = 0.1),
+                            numericInput('macro', 'Podaj szerokość makrokompartmentu', 
+                                         value = 3, min = 0, step = 0.1)
                           ),
                           mainPanel(
                             tabsetPanel(
                               tabPanel("Dane",
-                                       tableOutput("tabela_wyniki"))
+                                       tableOutput("tabela_wyniki")
+                                       ),
+                              tabPanel("Podsumowanie",
+                                       tableOutput("tabela_podsumowanie")
+                                       ),
+                              tabPanel("Wykresy",
+                                       plotOutput('wykres_podsumowanie'), height = "600px")
                             )
                             
                           )

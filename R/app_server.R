@@ -135,12 +135,121 @@ app_server <- function( input, output, session ) {
     }
     
   )
-  
-  mycsvs<-reactive({
+  # load multiple files into shiny using data.table and lapply
+  dane_porownanie <-reactive({
     data.table::rbindlist(lapply(input$wyniki$datapath, read.table),
               use.names = TRUE, fill = TRUE)
   })
-  output$tabela_wyniki <- renderTable(mycsvs())
+  output$tabela_wyniki <- renderTable(dane_porownanie())
 
+  
+  podsumowanie <- reactive({
+    
+    dane <- dane_porownanie()
+    
+    dane %>%
+      dplyr::group_by(szczep) %>%
+      dplyr::distinct(szczep, strzepka, spora, .keep_all = TRUE) %>%
+      dplyr::summarise(mean_dist_sept = mean(dist_sept),
+                       median_dist_sept = median(dist_sept),
+                       sd_dist_sept = sd(dist_sept),
+                       n_bez_DNA = sum(is.na(DNA)),
+                       proc_bez_DNA = n_bez_DNA/dplyr::n(),
+                       proc_micro = sum(dist_sept <= input$micro)/dplyr::n(),
+                       proc_macro = sum(dist_sept >= input$macro)/dplyr::n(),
+                       n = dplyr::n()) -> dane_podsum
+    
+    return(dane_podsum)
+    
+  })
+  
+  output$tabela_podsumowanie <- renderTable(podsumowanie())
+  
+  
+  podsumowanie_wykres <- reactive({
+    
+    dane <- dane_porownanie()
+    
+    
+    
+    dane_podsum <- podsumowanie()
+    
+    p1 <- ggplot2::ggplot(dane %>% dplyr::distinct(szczep, strzepka, spora, .keep_all = TRUE))
+    
+    # wybiera rodzaj wykresu
+    if(input$wykres_type == 'hist'){
+      p1 <- p1 + ggplot2::geom_histogram(ggplot2::aes(x = dist_sept, fill = szczep),
+                                         binwidth = 0.2)
+    }
+    
+    if(input$wykres_type == 'density'){
+      p1 <- p1 + ggplot2::geom_density(ggplot2::aes(x = dist_sept, color = szczep))
+    }
+    
+    if(input$wykres_type == 'boxplot'){
+      p1 <- p1 + ggplot2::geom_boxplot(ggplot2::aes(y = dist_sept, x = szczep), outlier.alpha = 0)+
+        ggbeeswarm::geom_quasirandom(ggplot2::aes(y = dist_sept, x = szczep), alpha = 0.2)
+    }
+    
+    # zaznacza micro i macrocomaprtmenty
+    if(input$wykres_type %in% c('hist', 'density')){
+      
+      p1 <- p1 + ggplot2::geom_vline(xintercept = c(input$micro, input$macro), 
+                                     linetype = 2, color = 'grey40')
+      
+    } else {
+      
+      p1 <- p1 + ggplot2::geom_hline(yintercept = c(input$micro, input$macro), 
+                                     linetype = 2, color = 'grey40')
+      
+    }
+    
+    # opisy osi
+    if(input$wykres_type %in% c('hist', 'density')){
+      
+      p1 <- p1 + ggplot2::xlab("Szerokość prespor")
+      
+    } else {
+      
+      p1 <- p1 + ggplot2::ylab("Szerokość prespor")
+      
+    }
+    
+    p1 <- p1 + ggplot2::scale_color_viridis_d(end = 0.9, option = 'B')+
+      ggplot2::scale_fill_viridis_d(end = 0.9, option = 'B')
+    
+    p1 <- p1 + ggplot2::theme_bw()
+    #print(p1)
+    
+    dane_podsum %>% dplyr::mutate(proc_z_DNA = 1 - proc_bez_DNA) %>%
+      dplyr::select(szczep, proc_z_DNA, proc_bez_DNA) %>%
+      tidyr::pivot_longer(cols = dplyr::contains('DNA'),
+                          names_to = 'DNA',
+                          values_to = 'procent') -> dane_DNA
+    
+    p2 <- ggplot2::ggplot(dane_DNA, ggplot2::aes(x = szczep, y = procent, fill = DNA))
+    
+    p2 <- p2 + ggplot2::geom_col()
+    
+    p2 <- p2 + ggplot2::scale_fill_manual(values = c('red3', 'gray40'),
+                                          name = 'DNA',
+                                          labels = c('Nie', 'Tak'))
+    
+    p2 <- p2 + ggplot2::theme(axis.title.y = ggplot2::element_blank())
+    
+    p2 <- p2 + ggplot2::coord_flip()
+    
+    p2 <- p2 + ggplot2::theme_bw()
+    
+    
+    print(p1 + p2 + plot_layout(ncol = 1, heights = c(4,1)))
+  })
+  
+  output$wykres_podsumowanie <- renderPlot({
+    if (is.null(input$wyniki))
+      return(NULL)
+    print(podsumowanie_wykres())
+  })
+  
   
 }
