@@ -12,6 +12,9 @@ app_server <- function( input, output, session ) {
   library(Peaks)
   library.dynam('Peaks', 'Peaks', lib.loc=NULL) 
   
+  ####  Code for the first tab - single hyphae analysis
+  
+  #read in data from file one and two
   dane_1 <- reactive({
     
     if(input$example == TRUE){
@@ -54,6 +57,8 @@ app_server <- function( input, output, session ) {
     
   })
   
+  
+  # find septa and DNA positions
   find_wynik <- reactive({
     
     ramka_1 <- dane_1()
@@ -77,6 +82,8 @@ app_server <- function( input, output, session ) {
     return(wynik)
   })
   
+  # creates a summary table icluding strain and hyphae id, ads column with parameters for reproducibility
+  
   wynik_podsum <- reactive({
     
     wynik <- find_wynik()
@@ -86,6 +93,7 @@ app_server <- function( input, output, session ) {
     
     usun_spory <- sub(' ', '', unlist(stringr::str_split(input$usun_spory, ',')))
     
+    # filter unwanted spores
     tabela <- tabela %>% dplyr::filter(!(spora %in% usun_spory))
     
     tabela$parametry <- paste(input$s_1, input$m_1, input$procent_1, input$threshold_1,
@@ -96,6 +104,7 @@ app_server <- function( input, output, session ) {
     
   })
   
+  #show summary table
   output$tabela <- renderTable({
     if ((is.null(input$dane_1)|is.null(input$dane_2))&input$example == FALSE)
       return(NULL)
@@ -103,7 +112,7 @@ app_server <- function( input, output, session ) {
   }
   )
   
-  
+  # make hyphae plot
   wykresInput <- reactive({
     
     ramka_1 <- dane_1()
@@ -125,10 +134,11 @@ app_server <- function( input, output, session ) {
     print(wykresInput())
   })
   
+  # download hyphae plot
   output$download_data <- downloadHandler(
     
     filename = function() {
-      paste('wynik', input$id, '.txt', sep = '')
+      paste('wynik', input$szczep, input$id, '.txt', sep = '')
     },
     content = function(file) {
       write.table(wynik_podsum(), file)
@@ -136,16 +146,9 @@ app_server <- function( input, output, session ) {
     
   )
   
-  output$download_data_all <- downloadHandler(
-    
-    filename = function() {
-      paste('wyniki_all', '.txt', sep = '')
-    },
-    content = function(file) {
-      write.table(dane_porownanie(), file)
-    }
-    
-  )
+  
+  #### Code for second tab - analysis od many hyphae
+  
   # load multiple files into shiny using data.table and lapply
   dane_porownanie <-reactive({
     data.table::rbindlist(lapply(input$wyniki$datapath, read.table),
@@ -153,7 +156,7 @@ app_server <- function( input, output, session ) {
   })
   output$tabela_wyniki <- renderTable(dane_porownanie())
 
-  
+  # create summary table for all data
   podsumowanie <- reactive({
     
     dane <- dane_porownanie()
@@ -174,9 +177,10 @@ app_server <- function( input, output, session ) {
     
   })
   
+  # show table with all data
   output$tabela_podsumowanie <- renderTable(podsumowanie())
   
-  
+  # make summary plot with histogram and barplots
   podsumowanie_wykres <- reactive({
     
     dane <- dane_porownanie()
@@ -232,6 +236,7 @@ app_server <- function( input, output, session ) {
     p1 <- p1 + ggplot2::theme_bw()
     #print(p1)
     
+    # plot showing percentage of spores lacking DNA
     dane_podsum %>% dplyr::mutate(proc_z_DNA = 1 - proc_bez_DNA) %>%
       dplyr::select(szczep, proc_z_DNA, proc_bez_DNA) %>%
       tidyr::pivot_longer(cols = dplyr::contains('DNA'),
@@ -261,6 +266,7 @@ app_server <- function( input, output, session ) {
                           values_to = 'procent') %>%
       dplyr::mutate(spore = factor(spore, levels = c('proc_macro', 'proc_norm', 'proc_micro'))) -> dane_DNA
     
+    # plot showing percentage of micro and macro compartments
     p3 <- ggplot2::ggplot(dane_DNA, ggplot2::aes(x = szczep, y = procent, fill = spore))
     
     p3 <- p3 + ggplot2::geom_col()
@@ -280,11 +286,24 @@ app_server <- function( input, output, session ) {
     print(p1 + p2 + p3 + plot_layout(ncol = 1, heights = c(4,1,1)))
   })
   
+  
+  # show summary plot
   output$wykres_podsumowanie <- renderPlot({
     if (is.null(input$wyniki))
       return(NULL)
     print(podsumowanie_wykres())
   })
   
+  # download data from second tab - bound together from many files
+  output$download_data_all <- downloadHandler(
+    
+    filename = function() {
+      paste('wyniki_all', '.txt', sep = '')
+    },
+    content = function(file) {
+      write.table(dane_porownanie(), file)
+    }
+    
+  )
   
 }

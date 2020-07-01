@@ -1,7 +1,7 @@
 # Funkcja do analizy sporulacji
 find_spory <- function(ramka_1, ramka_2, s_1 = 2, m_1 = FALSE, procent_1 = 0.05, threshold_1 = 10, 
-                           back_1=FALSE, s_2 = 1.25, m_2 = FALSE, procent_2 = 0.05, threshold_2 = 10, 
-                           back_2=FALSE, min_dna = TRUE, min_sept = TRUE, usun = NA, nr = 1, ...){
+                       back_1=FALSE, s_2 = 1.25, m_2 = FALSE, procent_2 = 0.05, threshold_2 = 10, 
+                       back_2=FALSE, min_dna = TRUE, min_sept = TRUE, usun = NA, nr = 1, ...){
   
   if(min_dna == TRUE){
     ramka_1[,2] <- ramka_1[,2] - min(ramka_1[,2])
@@ -36,14 +36,14 @@ find_spory <- function(ramka_1, ramka_2, s_1 = 2, m_1 = FALSE, procent_1 = 0.05,
   
 }
 
-
+# makes plots of analyzed hyphae with normalized fluorescence
 find_spory_plot <- function(ramka_1, ramka_2, wynik_dna, wynik_sept){
   
   ramka_1 <- ramka_1 %>% dplyr::mutate(V2 = V2 - min(V2),
-                                V2 = V2/max(V2))
+                                       V2 = V2/max(V2))
   
   ramka_2 <- ramka_2 %>% dplyr::mutate(V2 = V2 - min(V2),
-                                V2 = V2/max(V2))
+                                       V2 = V2/max(V2))
   
   max_plot <- max(ramka_1$V1)
   
@@ -74,6 +74,7 @@ find_spory_plot <- function(ramka_1, ramka_2, wynik_dna, wynik_sept){
   
 }
 
+# summarizes analyzed hyphae - creates result table from find_spory() result
 find_spory_summarise <- function(wynik_dna, wynik_sept, strzepka, szczep){
   
   x <- nrow(wynik_sept) + 1
@@ -143,10 +144,10 @@ find_spory_summarise <- function(wynik_dna, wynik_sept, strzepka, szczep){
   
   wynik <- wynik %>% dplyr::group_by(spora) %>%
     dplyr::mutate(liczba_chr = dplyr::n(),
-
+                  
                   liczba_chr = as.integer(ifelse(is.na(DNA), 0, liczba_chr))) %>%
-
-
+    
+    
     dplyr::arrange(sept_1)
   
   # cat('Dlugosc strzepki: ', wynik$dlugosc[1], '\n', 
