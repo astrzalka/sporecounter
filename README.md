@@ -20,6 +20,8 @@ You can install the released version of smoother from Github:
 
 ``` r
 devtools::install_github('astrzalka/sporecounter')
+
+sporecounter::run_app()
 ```
 
 However package Peaks is no longer available on CRAN and has been moved
