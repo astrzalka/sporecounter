@@ -20,14 +20,14 @@ app_ui <- function(request) {
                             fileInput("dane_2", 'Wybierz drugi plik .txt',
                                       accept=c('.txt')),
                             checkboxInput('header', 'Czy dane mają nagłówki?', value = TRUE),
-                            numericInput('s_1', 'Średnia szerokość pików dla DNA', value = 2, step = 0.1),
+                            sliderInput('s_1', 'Średnia szerokość pików dla DNA', value = 2, step = 0.1, min = 1, max = 10),
+                            sliderInput('procent_1', 'Procent odejmowanego tła dla DNA', value = 0.05, step = 0.01, min = 0, max = 1),
+                            sliderInput('threshold_1', 'Próg filtrowania pików dla DNA', value = 10, step = 1, min = 0, max = 100),
                             checkboxInput('m_1', 'Czy zastosować wygładzanie Markova dla DNA?', value = FALSE),
-                            numericInput('procent_1', 'Procent odejmowanego tła dla DNA', value = 0.05, step = 0.01),
-                            numericInput('threshold_1', 'Próg filtrowania pików dla DNA', value = 10, step = 1, min = 0, max = 100),
-                            numericInput('s_2', 'Średnia szerokość pików dla sept', value = 2, step = 0.1),
+                            sliderInput('s_2', 'Średnia szerokość pików dla sept', value = 2, step = 0.1, min = 1, max = 10),
+                            sliderInput('procent_2', 'Procent odejmowanego tła dla sept', value = 0.05, step = 0.01, min = 0, max = 1),
+                            sliderInput('threshold_2', 'Próg filtrowania pików dla sept', value = 10, step = 1, min = 0, max = 100),
                             checkboxInput('m_2', 'Czy zastosować wygładzanie Markova dla sept?', value = FALSE),
-                            numericInput('procent_2', 'Procent odejmowanego tła dla sept', value = 0.05, step = 0.01),
-                            numericInput('threshold_2', 'Próg filtrowania pików dla sept', value = 10, step = 1, min = 0, max = 100),
                             checkboxGroupInput('usun', 'Czy chcesz usunąć graniczne septy lub chromosomy?', 
                                                choices = c('Pierwszy chromosom' = 'dna_first',
                                                            'Ostatni chromosom' = 'dna_last',
@@ -70,13 +70,13 @@ app_ui <- function(request) {
                             tabsetPanel(
                               tabPanel("Dane",
                                        tableOutput("tabela_wyniki")
-                                       ),
+                              ),
                               tabPanel("Podsumowanie",
                                        tableOutput("tabela_podsumowanie")
-                                       ),
+                              ),
                               tabPanel("Wykresy",
                                        plotOutput('wykres_podsumowanie', height = "800px")
-                                       )
+                              )
                             )
                             
                           )
