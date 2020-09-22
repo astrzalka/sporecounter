@@ -44,8 +44,7 @@ app_server <- function( input, output, session ) {
       return(d)
     }
     inFile <- input$dane_2
-    if (is.null(inFile))
-      return(NULL)
+    
     d <- read.table(inFile$datapath, header=input$header, sep = '\t', quote = "\"")
     
     if(ncol(d) == 3){
@@ -54,7 +53,8 @@ app_server <- function( input, output, session ) {
     
     colnames(d) <- c('V1', 'V2')
     return(d)
-    
+    if (is.null(inFile))
+      return(NULL)
   })
   
   
@@ -152,10 +152,10 @@ app_server <- function( input, output, session ) {
   # load multiple files into shiny using data.table and lapply
   dane_porownanie <-reactive({
     data.table::rbindlist(lapply(input$wyniki$datapath, read.table),
-              use.names = TRUE, fill = TRUE)
+                          use.names = TRUE, fill = TRUE)
   })
   output$tabela_wyniki <- renderTable(dane_porownanie())
-
+  
   # create summary table for all data
   podsumowanie <- reactive({
     
@@ -222,11 +222,11 @@ app_server <- function( input, output, session ) {
     # opisy osi
     if(input$wykres_type %in% c('hist', 'density')){
       
-      p1 <- p1 + ggplot2::xlab("Szerokość prespor")
+      p1 <- p1 + ggplot2::xlab("Prespore length")
       
     } else {
       
-      p1 <- p1 + ggplot2::ylab("Szerokość prespor")
+      p1 <- p1 + ggplot2::ylab("Prespore length")
       
     }
     
@@ -249,7 +249,7 @@ app_server <- function( input, output, session ) {
     
     p2 <- p2 + ggplot2::scale_fill_manual(values = c('red3', 'gray40'),
                                           name = 'DNA',
-                                          labels = c('Nie', 'Tak'))
+                                          labels = c('No', 'Yes'))
     
     p2 <- p2 + ggplot2::xlab('')
     
@@ -273,7 +273,7 @@ app_server <- function( input, output, session ) {
     
     p3 <- p3 + ggplot2::scale_fill_manual(values = c('dodgerblue1', 'gray40', 'indianred3'),
                                           name = '',
-                                          labels = c('Makrokompartment', 'Normalna prespora', 'Mikrokompartment'))
+                                          labels = c('Macrocompartment', 'Normal prespore', 'Microcompartment'))
     
     p3 <- p3 + ggplot2::xlab('')
     

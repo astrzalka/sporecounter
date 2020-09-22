@@ -9,34 +9,34 @@ app_ui <- function(request) {
     # Leave this function for adding external resources
     golem_add_external_resources(),
     # List the first level UI elements here 
-    navbarPage('sporcounter',
+    navbarPage('sporecounter',
                theme = shinythemes::shinytheme("united"),
-               tabPanel("Analiza strzępki",
+               tabPanel("Hypha analysis",
                         sidebarLayout(
                           sidebarPanel(
-                            checkboxInput('example', 'Czy chcesz załadować przykładowe dane?'),
-                            fileInput("dane_1", 'Wybierz pierwszy plik .txt',
+                            checkboxInput('example', 'Load example dataset?'),
+                            fileInput("dane_1", 'Choose first file - DNA profile',
                                       accept=c('.txt')),
-                            fileInput("dane_2", 'Wybierz drugi plik .txt',
+                            fileInput("dane_2", 'Choose second file - cell wall profile',
                                       accept=c('.txt')),
-                            checkboxInput('header', 'Czy dane mają nagłówki?', value = TRUE),
-                            sliderInput('s_1', 'Średnia szerokość pików dla DNA', value = 2, step = 0.1, min = 1, max = 10),
-                            sliderInput('procent_1', 'Procent odejmowanego tła dla DNA', value = 0.05, step = 0.01, min = 0, max = 1),
-                            sliderInput('threshold_1', 'Próg filtrowania pików dla DNA', value = 10, step = 1, min = 0, max = 100),
-                            checkboxInput('m_1', 'Czy zastosować wygładzanie Markova dla DNA?', value = FALSE),
-                            sliderInput('s_2', 'Średnia szerokość pików dla sept', value = 2, step = 0.1, min = 1, max = 10),
-                            sliderInput('procent_2', 'Procent odejmowanego tła dla sept', value = 0.05, step = 0.01, min = 0, max = 1),
-                            sliderInput('threshold_2', 'Próg filtrowania pików dla sept', value = 10, step = 1, min = 0, max = 100),
-                            checkboxInput('m_2', 'Czy zastosować wygładzanie Markova dla sept?', value = FALSE),
-                            checkboxGroupInput('usun', 'Czy chcesz usunąć graniczne septy lub chromosomy?', 
-                                               choices = c('Pierwszy chromosom' = 'dna_first',
-                                                           'Ostatni chromosom' = 'dna_last',
-                                                           'Pierwsza septa' = 'sept_first',
-                                                           'Ostatnia septa' = 'sept_last'), inline = TRUE),
-                            textInput('usun_spory', 'Czy chcesz usunąć niektóre spory? (Podaj ich nazwy oddzielone przecinkami)'),
-                            textInput('id', 'Identyfikator strzępki', 'strzepka_1'),
-                            textInput('szczep', 'Podaj nazwę szczepu - do porównania z innymi', 'szczep'),
-                            downloadButton('download_data', 'Pobierz wynik w formacie txt'),
+                            checkboxInput('header', 'Do txt files contain headers?', value = TRUE),
+                            sliderInput('s_1', 'Sigma value for DNA peaks', value = 2, step = 0.1, min = 1, max = 10),
+                            sliderInput('procent_1', 'Background percentage for DNA peaks', value = 0.05, step = 0.01, min = 0, max = 1),
+                            sliderInput('threshold_1', 'Filtering threshold (%) for DNA peaks', value = 10, step = 1, min = 0, max = 100),
+                            checkboxInput('m_1', 'Use Markov smoothing for DNA peaks?', value = FALSE),
+                            sliderInput('s_2', 'Sigma value for sept peaks', value = 2, step = 0.1, min = 1, max = 10),
+                            sliderInput('procent_2', 'Background percentage for sept peaks', value = 0.05, step = 0.01, min = 0, max = 1),
+                            sliderInput('threshold_2', 'Filtering threshold for sept peaks', value = 10, step = 1, min = 0, max = 100),
+                            checkboxInput('m_2', 'Use Markov smoothing for DNA peaks?', value = FALSE),
+                            checkboxGroupInput('usun', 'Should boundary septs or chromosomes be removed?', 
+                                               choices = c('First chromosome' = 'dna_first',
+                                                           'Last chromosome' = 'dna_last',
+                                                           'First sept' = 'sept_first',
+                                                           'Last sept' = 'sept_last'), inline = TRUE),
+                            textInput('usun_spory', 'Remove specific spores? (names should be separated by commas)'),
+                            textInput('id', 'Hypha id', 'hypha_1'),
+                            textInput('szczep', 'Strain name (for later comparison)', 'strain'),
+                            downloadButton('download_data', 'Download result in txt format'),
                             
                             width=3
                             
@@ -49,32 +49,32 @@ app_ui <- function(request) {
                           )
                         )
                ),
-               tabPanel("Zebranie wyników",
+               tabPanel("Comparison",
                         sidebarLayout(
                           sidebarPanel(
-                            fileInput('wyniki', 'Wczytaj pliki txt z wynikami', multiple = TRUE),
-                            radioButtons('wykres_type', 'Jak pokazać odległości pomiędzy przegrodami?',
+                            fileInput('wyniki', 'Load txt result files', multiple = TRUE),
+                            radioButtons('wykres_type', 'Choose plot type for prespore length?',
                                          choices = c("Histogram" = 'hist',
                                                      'Boxplot' = 'boxplot',
-                                                     'Wykres gęstości prawdopodobieństwa' = 'density'),
+                                                     'Density plot' = 'density'),
                                          selected = 'boxplot', inline = TRUE),
-                            numericInput('hist_bin', 'Podaj szerość słupków histogramu', value = 0.2, 
-                                         step = 0.1),
-                            numericInput('micro', 'Podaj szerokość mikrokompartmentu', 
+                            numericInput('hist_bin', 'Choose bins width for histogram', value = 0.2, 
+                                         step = 0.05),
+                            numericInput('micro', 'Choose width of microcompartment', 
                                          value = 0.5, min = 0, step = 0.1),
-                            numericInput('macro', 'Podaj szerokość makrokompartmentu', 
+                            numericInput('macro', 'Choose width of macrocompartment', 
                                          value = 3, min = 0, step = 0.1),
-                            downloadButton('download_data_all', 'Pobierz zebrane dane w formacie txt')
+                            downloadButton('download_data_all', 'Download combined result file in txt format')
                           ),
                           mainPanel(
                             tabsetPanel(
-                              tabPanel("Dane",
+                              tabPanel("Data",
                                        tableOutput("tabela_wyniki")
                               ),
-                              tabPanel("Podsumowanie",
+                              tabPanel("Summary",
                                        tableOutput("tabela_podsumowanie")
                               ),
-                              tabPanel("Wykresy",
+                              tabPanel("Plots",
                                        plotOutput('wykres_podsumowanie', height = "800px")
                               )
                             )
