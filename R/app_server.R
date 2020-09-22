@@ -95,6 +95,14 @@ app_server <- function( input, output, session ) {
     
     # filter unwanted spores
     tabela <- tabela %>% dplyr::filter(!(spora %in% usun_spory))
+    if("spore_first" %in% input$usun){
+      tabela <- tabela %>% dplyr::filter(spora != 's_1')
+    }
+    if("spore_last" %in% input$usun){
+      spore_last <- tail(unique(tabela$spora), 1)
+      
+      tabela <- tabela %>% dplyr::filter(spora != spore_last)
+    }
     
     tabela$parametry <- paste(input$s_1, input$m_1, input$procent_1, input$threshold_1,
                               input$s_2, input$m_2, input$procent_2, input$threshold_2,

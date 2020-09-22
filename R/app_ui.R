@@ -12,42 +12,61 @@ app_ui <- function(request) {
     navbarPage('sporecounter',
                theme = shinythemes::shinytheme("united"),
                tabPanel("Hypha analysis",
-                        sidebarLayout(
-                          sidebarPanel(
-                            checkboxInput('example', 'Load example dataset?'),
-                            fileInput("dane_1", 'Choose first file - DNA profile',
-                                      accept=c('.txt')),
-                            fileInput("dane_2", 'Choose second file - cell wall profile',
-                                      accept=c('.txt')),
-                            checkboxInput('header', 'Do txt files contain headers?', value = TRUE),
-                            sliderInput('s_1', 'Sigma value for DNA peaks', value = 2, step = 0.1, min = 1, max = 10),
-                            sliderInput('procent_1', 'Background percentage for DNA peaks', value = 0.05, step = 0.01, min = 0, max = 1),
-                            sliderInput('threshold_1', 'Filtering threshold (%) for DNA peaks', value = 10, step = 1, min = 0, max = 100),
-                            checkboxInput('m_1', 'Use Markov smoothing for DNA peaks?', value = FALSE),
-                            sliderInput('s_2', 'Sigma value for sept peaks', value = 2, step = 0.1, min = 1, max = 10),
-                            sliderInput('procent_2', 'Background percentage for sept peaks', value = 0.05, step = 0.01, min = 0, max = 1),
-                            sliderInput('threshold_2', 'Filtering threshold for sept peaks', value = 10, step = 1, min = 0, max = 100),
-                            checkboxInput('m_2', 'Use Markov smoothing for DNA peaks?', value = FALSE),
-                            checkboxGroupInput('usun', 'Should boundary septs or chromosomes be removed?', 
-                                               choices = c('First chromosome' = 'dna_first',
-                                                           'Last chromosome' = 'dna_last',
-                                                           'First sept' = 'sept_first',
-                                                           'Last sept' = 'sept_last'), inline = TRUE),
-                            textInput('usun_spory', 'Remove specific spores? (names should be separated by commas)'),
-                            textInput('id', 'Hypha id', 'hypha_1'),
-                            textInput('szczep', 'Strain name (for later comparison)', 'strain'),
-                            downloadButton('download_data', 'Download result in txt format'),
-                            
-                            width=3
-                            
+                        #sidebarLayout(
+                        #sidebarPanel(
+                        
+                        fluidRow(
+                          column(4,
+                                 checkboxInput('example', 'Load example dataset?'),
+                                 
+                                           
+                                 
+                                 checkboxInput('header', 'Do txt files contain headers?', value = TRUE),
+                                 fluidRow(
+                                   column(6,
+                                          h4('DNA'),
+                                          fileInput("dane_1", 'Choose file - DNA profile',
+                                                    accept=c('.txt')),
+                                          sliderInput('s_1', 'Sigma value', value = 2, step = 0.1, min = 1, max = 10),
+                                          sliderInput('procent_1', 'Background percentage', value = 0.05, step = 0.01, min = 0, max = 1),
+                                          sliderInput('threshold_1', 'Filtering threshold (%)', value = 10, step = 1, min = 0, max = 100),
+                                          checkboxInput('m_1', 'Use Markov smoothing?', value = FALSE)
+                                   ),
+                                   column(6,
+                                          h4('Cell wall'),
+                                          fileInput("dane_2", 'Choose file - cell wall profile',
+                                                    accept=c('.txt')),
+                                          sliderInput('s_2', 'Sigma value', value = 2, step = 0.1, min = 1, max = 10),
+                                          sliderInput('procent_2', 'Background percentage', value = 0.05, step = 0.01, min = 0, max = 1),
+                                          sliderInput('threshold_2', 'Filtering threshold', value = 10, step = 1, min = 0, max = 100),
+                                          checkboxInput('m_2', 'Use Markov smoothing?', value = FALSE)
+                                   )
+                                 ),
+                                 checkboxGroupInput('usun', 'Should boundary septs, chromosomes or spores be removed?', 
+                                                    choices = c('First chromosome' = 'dna_first',
+                                                                'Last chromosome' = 'dna_last',
+                                                                'First sept' = 'sept_first',
+                                                                'Last sept' = 'sept_last',
+                                                                "First spore" = 'spore_first',
+                                                                "Last spore" = "spore_last"), inline = TRUE,
+                                                    selected = c('spore_first', "spore_last")),
+                                 textInput('usun_spory', 'Remove specific spores? (names should be separated by commas)'),
+                                 textInput('id', 'Hypha id', 'hypha_1'),
+                                 textInput('szczep', 'Strain name (for later comparison)', 'strain'),
+                                 downloadButton('download_data', 'Download result in txt format')
+                                 
+                                 #width=3
+                                 
                           ),
                           
-                          mainPanel(
-                            plotOutput("wykres", height = "600px"),
-                            tableOutput("tabela"),
-                            width=9
+                          #mainPanel(
+                          column(width = 8,
+                                 plotOutput("wykres", height = "600px"),
+                                 tableOutput("tabela")
+                                 #width=9
                           )
                         )
+                        
                ),
                tabPanel("Comparison",
                         sidebarLayout(
