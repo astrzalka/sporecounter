@@ -72,12 +72,12 @@ app_ui <- function(request) {
                         sidebarLayout(
                           sidebarPanel(
                             fileInput('wyniki', 'Load txt result files', multiple = TRUE),
-                            radioButtons('wykres_type', 'Choose plot type for prespore length?',
+                            radioButtons('wykres_type', 'Choose plot type',
                                          choices = c("Histogram" = 'hist',
                                                      'Boxplot' = 'boxplot',
                                                      'Density plot' = 'density'),
                                          selected = 'boxplot', inline = TRUE),
-                            numericInput('hist_bin', 'Choose bins width for histogram', value = 0.2, 
+                            numericInput('hist_bin', 'Choose binwidth for histogram', value = 0.2, 
                                          step = 0.05),
                             numericInput('micro', 'Choose width of microcompartment', 
                                          value = 0.5, min = 0, step = 0.1),
