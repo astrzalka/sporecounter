@@ -75,7 +75,14 @@ app_server <- function( input, output, session ) {
                         m_2 = input$m_2,
                         procent_2 = input$procent_2,
                         threshold_2 = input$threshold_2,
-                        usun = input$usun)
+                        usun = input$usun,
+                        filter_local_dna = input$filter_local_dna,
+                        filter_local_int_dna = input$filter_local_int_dna,
+                        filter_local_width_dna = input$filter_local_width_dna,
+                        filter_local_sept = input$filter_local_sept,
+                        filter_local_int_sept = input$filter_local_int_sept,
+                        filter_local_width_sept = input$filter_local_width_sept
+                        )
     
     
     

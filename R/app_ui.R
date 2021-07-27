@@ -19,7 +19,7 @@ app_ui <- function(request) {
                           column(4,
                                  checkboxInput('example', 'Load example dataset?'),
                                  
-                                           
+                                 
                                  
                                  checkboxInput('header', 'Do txt files contain headers?', value = TRUE),
                                  fluidRow(
@@ -30,7 +30,14 @@ app_ui <- function(request) {
                                           sliderInput('s_1', 'Sigma value', value = 2, step = 0.1, min = 1, max = 10),
                                           sliderInput('procent_1', 'Background percentage', value = 0.05, step = 0.01, min = 0, max = 1),
                                           sliderInput('threshold_1', 'Filtering threshold (%)', value = 10, step = 1, min = 0, max = 100),
-                                          checkboxInput('m_1', 'Use Markov smoothing?', value = FALSE)
+                                          checkboxInput('m_1', 'Use Markov smoothing?', value = FALSE),
+                                          checkboxInput('filter_local_dna', 'Apply local filter?', value = FALSE),
+                                          conditionalPanel('input.filter_local_dna == true',
+                                                           sliderInput('filter_local_width_dna', 'Choose width of local filter',
+                                                                       min = 0.1, max = 10, value = 2),
+                                                           numericInput('filter_local_int_dna', 'Choose ratio for local filter',
+                                                                        value = 1.05, step = 0.01)
+                                          )
                                    ),
                                    column(6,
                                           h4('Cell wall'),
@@ -39,7 +46,14 @@ app_ui <- function(request) {
                                           sliderInput('s_2', 'Sigma value', value = 2, step = 0.1, min = 1, max = 10),
                                           sliderInput('procent_2', 'Background percentage', value = 0.05, step = 0.01, min = 0, max = 1),
                                           sliderInput('threshold_2', 'Filtering threshold', value = 10, step = 1, min = 0, max = 100),
-                                          checkboxInput('m_2', 'Use Markov smoothing?', value = FALSE)
+                                          checkboxInput('m_2', 'Use Markov smoothing?', value = FALSE),
+                                          checkboxInput('filter_local_sept', 'Apply local filter?', value = FALSE),
+                                          conditionalPanel('input.filter_local_sept == true',
+                                                           sliderInput('filter_local_width_sept', 'Choose width of local filter',
+                                                                       min = 0.1, max = 10, value = 2),
+                                                           numericInput('filter_local_int_sept', 'Choose ratio for local filter',
+                                                                        value = 1.05, step = 0.01)
+                                          )
                                    )
                                  ),
                                  checkboxGroupInput('usun', 'Should boundary septs, chromosomes or spores be removed?', 
@@ -66,6 +80,7 @@ app_ui <- function(request) {
                                  #width=9
                           )
                         )
+                        
                         
                ),
                tabPanel("Comparison",

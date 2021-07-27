@@ -1,7 +1,10 @@
 # Funkcja do analizy sporulacji
 find_spory <- function(ramka_1, ramka_2, s_1 = 2, m_1 = FALSE, procent_1 = 0.05, threshold_1 = 10, 
                        back_1=FALSE, s_2 = 1.25, m_2 = FALSE, procent_2 = 0.05, threshold_2 = 10, 
-                       back_2=FALSE, min_dna = TRUE, min_sept = TRUE, usun = NA, nr = 1, ...){
+                       back_2=FALSE, min_dna = TRUE, min_sept = TRUE, usun = NA, nr = 1, 
+                       filter_local_dna = FALSE, filter_local_int_dna = 1.05, filter_local_width_dna = 2,
+                       filter_local_sept = FALSE, filter_local_int_sept = 1.05, filter_local_width_sept = 2,
+                       ...){
   
   if(min_dna == TRUE){
     ramka_1[,2] <- ramka_1[,2] - min(ramka_1[,2])
@@ -13,8 +16,12 @@ find_spory <- function(ramka_1, ramka_2, s_1 = 2, m_1 = FALSE, procent_1 = 0.05,
   ramka_1$V3 <- 'szczep'
   ramka_2$V3 <- 'szczep'
   
-  wynik_dna <- find_peaks(ramka_1, s = s_1, procent = procent_1, m = m_1, threshold = threshold_1, plot = FALSE)
-  wynik_sept <- find_peaks(ramka_2, s = s_2, procent = procent_2, m = m_2, threshold = threshold_2, plot = FALSE)
+  wynik_dna <- find_peaks(ramka_1, s = s_1, procent = procent_1, m = m_1, threshold = threshold_1, plot = FALSE,
+                          filter_local = filter_local_dna, filter_local_int = filter_local_int_dna,
+                          filter_local_width = filter_local_width_dna)
+  wynik_sept <- find_peaks(ramka_2, s = s_2, procent = procent_2, m = m_2, threshold = threshold_2, plot = FALSE,
+                           filter_local = filter_local_sept, filter_local_int = filter_local_int_sept,
+                           filter_local_width = filter_local_width_sept)
   
   if ('dna_first' %in% usun){
     wynik_dna <- wynik_dna[-1,]
@@ -170,7 +177,9 @@ find_spory_summarise <- function(wynik_dna, wynik_sept, strzepka, szczep){
 # back - na razie niech zostanie FALSE 
 # dodaj_nr - czy ma numerować piki ... 
 find_peaks <- function (ramka, s = 2, m = FALSE, procent = 1, threshold=10, 
-                        back=FALSE, plot=TRUE, lapse = 10, dodaj_nr = TRUE, ...) { 
+                        back=FALSE, plot=TRUE, lapse = 10, dodaj_nr = TRUE,
+                        filter_local = FALSE, 
+                        filter_local_int = 1.05, filter_local_width = 2, ...) { 
   # ładuje potrzebne pakiety (muszą być zainstalowane)
   #library(modeest)
   #library(Peaks)
@@ -221,6 +230,30 @@ find_peaks <- function (ramka, s = 2, m = FALSE, procent = 1, threshold=10,
                                  tlo = baza[[1]],
                                  tlo_nor = baza2[1],
                                  czas = (i * lapse)-lapse) # kolejna klatka
+
+      if(filter_local){
+        usun <- numeric(0)
+        for(k in 1:nrow(wynik)){
+          peak_maximum <- wynik$int_raw[k]
+          min_width <- wynik$dist_tip[k] - filter_local_width/2
+          max_width <- wynik$dist_tip[k] + filter_local_width/2
+
+          locality <- subset(x1, V1 >= min_width & V1 < max_width)
+          locality <- mean(locality$V2)
+
+          if(peak_maximum/locality > filter_local_int){
+
+          } else {
+            usun <- c(usun, k)
+          }
+
+        }
+
+        if(length(usun) > 0){
+          wynik <- wynik[-usun,]
+        }
+      }
+      
     } else { wynik <- NULL}
     # jeżeli obrót pętli inny niż jeden to dopisujemy wyniki do poprzednich
     if (i == 1){ wynik_kon = wynik} else {

@@ -53,6 +53,7 @@ for(i=0; i < ile; i+=1){
 	//print(slice);
 	// Robimy kwadrat dokoła strzępki i duplikujemy
 	run("To Bounding Box");
+	run("Enlarge...", "enlarge=2");
 	run("Duplicate...", "duplicate frames="+(slice/3));
 	
 
